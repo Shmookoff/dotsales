@@ -18,6 +18,7 @@ import { zodConfigValidator } from './lib/zod-config';
     ConfigModule.forRoot({
       cache: true,
       validate: zodConfigValidator(appConfigSchema),
+      expandVariables: true,
     }),
     DealsModule,
     ContactsModule,

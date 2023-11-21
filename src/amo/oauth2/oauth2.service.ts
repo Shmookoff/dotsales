@@ -14,25 +14,36 @@ export class Oauth2Service extends AbstractClientService {
     super();
   }
 
-  accessToken(
+  async accessToken(
     options: (
       | { grant_type: 'authorization_code'; code: string }
       | { grant_type: 'refresh_token'; refresh_token: string }
     ) & {
       referer: string;
     },
-  ) {
+  ): Promise<{
+    token_type: string;
+    expires_in: number;
+    access_token: string;
+    refresh_token: string;
+  }> {
     const { referer, ...params } = options;
 
-    return fetch(
-      this.constructUrl(referer, '/access_token') +
-        '?' +
-        new URLSearchParams({
-          ...params,
-          client_id: this.config.AMO_CLIENT_ID,
-          client_secret: this.config.AMO_CLIENT_SECRET,
-          redirect_uri: this.config.AMO_CLIENT_REDIRECT_URI,
-        }),
-    );
+    const response = await fetch(this.constructUrl(referer, '/access_token'), {
+      method: 'POST',
+      body: JSON.stringify({
+        ...params,
+        client_id: this.config.AMO_CLIENT_ID,
+        client_secret: this.config.AMO_CLIENT_SECRET,
+        redirect_uri: this.config.AMO_CLIENT_REDIRECT_URI,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    const text = await response.text();
+    if (!response.ok) throw Error(text);
+
+    const data = JSON.parse(text);
+    return data;
   }
 }
