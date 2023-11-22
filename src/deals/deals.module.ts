@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { DealsService } from './deals.service';
 import { DealsController } from './deals.controller';
+import { AmoModule } from 'src/amo/amo.module';
 
 @Module({
+  imports: [AmoModule],
   controllers: [DealsController],
-  providers: [DealsService],
 })
 export class DealsModule {}

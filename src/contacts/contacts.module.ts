@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ContactsService } from './contacts.service';
+import { ContactsController } from './contacts.controller';
+import { AmoModule } from 'src/amo/amo.module';
 
 @Module({
-  providers: [ContactsService],
+  imports: [AmoModule],
+  controllers: [ContactsController],
 })
 export class ContactsModule {}

@@ -19,7 +19,7 @@ export class AuthService {
         referer,
       });
     await this.account.set({
-      accessToken: { value: access_token, expiresIn: expires_in },
+      accessToken: { value: access_token, expiresIn: expires_in - 600 },
       refreshToken: { value: refresh_token },
       address: { value: referer },
     });

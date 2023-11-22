@@ -19,7 +19,7 @@ export class AccountService {
       this.redis.get(this.refreshTokenKey),
       this.redis.get(this.addressKey),
     ]);
-    if (accessToken || refreshToken || address)
+    if (accessToken && refreshToken && address)
       return { accessToken, refreshToken, address };
     if (refreshToken && address) {
       const creds = await this.oauth2.accessToken({

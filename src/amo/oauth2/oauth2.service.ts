@@ -5,7 +5,7 @@ import { AbstractClientService } from '../abstract-client/abstract-client.servic
 
 @Injectable()
 export class Oauth2Service extends AbstractClientService {
-  readonly basePath = '/oauth2';
+  protected readonly basePath = '/oauth2';
 
   constructor(
     @Inject(oauth2Config.KEY)
@@ -21,15 +21,15 @@ export class Oauth2Service extends AbstractClientService {
     ) & {
       referer: string;
     },
-  ): Promise<{
-    token_type: string;
-    expires_in: number;
-    access_token: string;
-    refresh_token: string;
-  }> {
+  ) {
     const { referer, ...params } = options;
 
-    const response = await fetch(this.constructUrl(referer, '/access_token'), {
+    const data = await this._fetch<{
+      token_type: string;
+      expires_in: number;
+      access_token: string;
+      refresh_token: string;
+    }>(referer, '/access_token', {
       method: 'POST',
       body: JSON.stringify({
         ...params,
@@ -40,10 +40,6 @@ export class Oauth2Service extends AbstractClientService {
       headers: { 'Content-Type': 'application/json' },
     });
 
-    const text = await response.text();
-    if (!response.ok) throw Error(text);
-
-    const data = JSON.parse(text);
     return data;
   }
 }
